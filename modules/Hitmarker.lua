@@ -201,13 +201,10 @@ return function(GUI, S)
         end
     end)
 
-    local OldNameCall
-    OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-        local method = getnamecallmethod()
-        if method == "FireServer" and self == ShootEvent then
-            Bindable:Fire(...)
+    table.insert(S.NamecallHooks, function(self, method, ...)
+    if method == "FireServer" and self == ShootEvent then
+        Bindable:Fire(...)
         end
-        return OldNameCall(self, ...)
     end)
 
     -- ===================== RENDER LOOP =====================
