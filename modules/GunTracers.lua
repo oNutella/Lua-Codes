@@ -61,13 +61,10 @@ return function(GUI, S)
         end
     end)
 
-    local OldNameCall
-    OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-        local method = getnamecallmethod()
+    table.insert(S.NamecallHooks, function(self, method, ...)
         if method == "FireServer" and self == ShootEvent then
-            setJustShot()
+        setJustShot()
         end
-        return OldNameCall(self, ...)
     end)
 
     -- ===================== HELPERS =====================
