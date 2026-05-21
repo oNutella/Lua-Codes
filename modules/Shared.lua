@@ -1,8 +1,7 @@
 -- modules/Shared.lua
 -- Returns a table of constants shared across all CycleWare modules.
 
-return function()
-    return {
+return {
         -- Button toggle colors
         COLOR_ON     = Color3.fromRGB(0,   140, 140),
         COLOR_OFF    = Color3.fromRGB(100, 100, 100),
