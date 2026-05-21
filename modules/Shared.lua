@@ -1,4 +1,4 @@
-local Shared = {
+return {
     COLOR_ON     = Color3.fromRGB(61, 143, 220),
     COLOR_OFF    = Color3.fromRGB(100, 100, 100),
     COLOR_YELLOW = Color3.fromRGB(255, 170, 0),
@@ -56,16 +56,3 @@ local Shared = {
 
     NamecallHooks = {},
 }
-
-local old
-old = hookmetamethod(game, "__namecall", function(self, ...)
-    local method = getnamecallmethod()
-
-    for _, callback in ipairs(Shared.NamecallHooks) do
-        callback(self, method, ...)
-    end
-
-    return old(self, ...)
-end)
-
-return Shared
