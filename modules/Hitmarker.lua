@@ -8,6 +8,7 @@ return function(GUI, S)
     local UIS               = game:GetService("UserInputService")
     local RunService        = game:GetService("RunService")
     local Players           = game:GetService("Players")
+    local Debris            = game:GetService("Debris")
 
     local ToggleButton = GUI.Buttons.Hitmarker
     local TB           = GUI.TextBoxes
@@ -150,40 +151,44 @@ return function(GUI, S)
 
     -- ===================== HIT DETECTION =====================
     local function createSoundEffect(id, volume)
-        coroutine.wrap(function()
+        task.spawn(function()
             local sound = Instance.new("Sound")
             sound.SoundId = id
             sound.Volume  = volume or 1
             SoundService:PlayLocalSound(sound)
             sound.Ended:Wait()
             sound:Destroy()
-        end)()
+        end)
     end
 
-    local Remotes    = ReplicatedStorage:FindFirstChild("GunRemotes") or ReplicatedStorage
-    local ShootEvent = Remotes.ShootEvent
+    -- Added dynamic yield protection so early script initialization doesn't break it
+    local Remotes    = ReplicatedStorage:WaitForChild("GunRemotes", 5) or ReplicatedStorage
+    local ShootEvent = Remotes:WaitForChild("ShootEvent", 5)
     local Bindable   = Instance.new("BindableEvent")
 
     Bindable.Event:Connect(function(bullets, gun)
         if not isEnabled() then return end
         local ShotHit = false
 
-        for _, bullet in pairs(bullets) do
-            local Hit = bullet[3]
-            if not Hit or not Hit.Parent then continue end
+        if typeof(bullets) == "table" then
+            for _, bullet in pairs(bullets) do
+                if typeof(bullet) ~= "table" then continue end
+                local Hit = bullet[3]
+                if typeof(Hit) ~= "Instance" or not Hit.Parent then continue end
 
-            local Limb      = Hit.Parent:FindFirstChildOfClass("Humanoid") ~= nil
-            local Accessory = Hit.Parent.Parent and Hit.Parent.Parent:FindFirstChildOfClass("Humanoid") ~= nil
+                local Limb      = Hit.Parent:FindFirstChildOfClass("Humanoid") ~= nil
+                local Accessory = Hit.Parent.Parent and Hit.Parent.Parent:FindFirstChildOfClass("Humanoid") ~= nil
 
-            if Limb then
-                local Player = Players:GetPlayerFromCharacter(Hit.Parent)
-                if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
-                    ShotHit = true break
-                end
-            elseif Accessory then
-                local Player = Players:GetPlayerFromCharacter(Hit.Parent.Parent)
-                if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
-                    ShotHit = true break
+                if Limb then
+                    local Player = Players:GetPlayerFromCharacter(Hit.Parent)
+                    if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
+                        ShotHit = true break
+                    end
+                elseif Accessory then
+                    local Player = Players:GetPlayerFromCharacter(Hit.Parent.Parent)
+                    if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
+                        ShotHit = true break
+                    end
                 end
             end
         end
@@ -197,14 +202,15 @@ return function(GUI, S)
             Clone.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y)
             Clone.Parent   = IAPortable
             Clone.Rotation = math.random(0, 90)
-            game:GetService("Debris"):AddItem(Clone, 0.05)
+            Debris:AddItem(Clone, 0.05)
         end
     end)
 
     local OldNameCall
     OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
         local method = getnamecallmethod()
-        if method == "FireServer" and self == ShootEvent then
+        -- Robust checking to ensure ShootEvent was successfully bound
+        if ShootEvent and method == "FireServer" and self == ShootEvent then
             Bindable:Fire(...)
         end
         return OldNameCall(self, ...)
