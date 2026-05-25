@@ -14,7 +14,7 @@ return function(GUI, S)
     local TB           = GUI.TextBoxes
 
     -- ===================== DEFAULTS =====================
-    local DefaultCursorId     = "rbxassetid://2991611250"
+    local DefaultCursorId     = "rbxassetid://3355815697" -- Updated to your inspired cursor
     local DefaultSoundId      = "rbxassetid://1347140027"
     local DefaultHitmarkerId  = "rbxassetid://890801299"
     local DefaultCursorSize   = 85
@@ -163,31 +163,30 @@ return function(GUI, S)
 
     local Remotes    = ReplicatedStorage:WaitForChild("GunRemotes", 5) or ReplicatedStorage
     local ShootEvent = Remotes:WaitForChild("ShootEvent", 5)
-    local Bindable   = Instance.new("BindableEvent")
 
-    Bindable.Event:Connect(function(bullets, gun)
-        if not isEnabled() then return end
+    local function processHitmarkers(bullets)
+        if not isEnabled() or typeof(bullets) ~= "table" then return end
         local ShotHit = false
 
-        if typeof(bullets) == "table" then
-            for _, bullet in pairs(bullets) do
-                if typeof(bullet) ~= "table" then continue end
-                local Hit = bullet[3]
-                if typeof(Hit) ~= "Instance" or not Hit.Parent then continue end
+        for _, bullet in pairs(bullets) do
+            if typeof(bullet) ~= "table" then continue end
+            
+            -- Dynamic safety check handles both bullet.Hit and bullet[3] structures safely
+            local Hit = bullet.Hit or bullet[3]
+            if not Hit or typeof(Hit) ~= "Instance" or not Hit.Parent then continue end
 
-                local Limb      = Hit.Parent:FindFirstChildOfClass("Humanoid") ~= nil
-                local Accessory = Hit.Parent.Parent and Hit.Parent.Parent:FindFirstChildOfClass("Humanoid") ~= nil
+            local Limb      = Hit.Parent:FindFirstChildOfClass("Humanoid") ~= nil
+            local Accessory = Hit.Parent.Parent and Hit.Parent.Parent:FindFirstChildOfClass("Humanoid") ~= nil
 
-                if Limb then
-                    local Player = Players:GetPlayerFromCharacter(Hit.Parent)
-                    if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
-                        ShotHit = true break
-                    end
-                elseif Accessory then
-                    local Player = Players:GetPlayerFromCharacter(Hit.Parent.Parent)
-                    if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
-                        ShotHit = true break
-                    end
+            if Limb then
+                local Player = Players:GetPlayerFromCharacter(Hit.Parent)
+                if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
+                    ShotHit = true break
+                end
+            elseif Accessory then
+                local Player = Players:GetPlayerFromCharacter(Hit.Parent.Parent)
+                if Player and Player.TeamColor ~= LocalPlayer.TeamColor then
+                    ShotHit = true break
                 end
             end
         end
@@ -203,20 +202,19 @@ return function(GUI, S)
             Clone.Rotation = math.random(0, 90)
             Debris:AddItem(Clone, 0.05)
         end
-    end)
+    end
 
-    -- ===================== NETWORK HOOK =====================
-    local OldNameCall
-    OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-        local method = getnamecallmethod()
-        
-        if ShootEvent and method == "FireServer" and self == ShootEvent then
-            -- Using standard dot notation avoids triggering a secondary namecall, 
-            -- keeping getnamecallmethod() intact for the game's original call.
-            Bindable.Fire(Bindable, ...)
+    -- ===================== CLEAN METHOD HOOK =====================
+    -- Direct method hooking completely avoids __namecall environment corruption errors
+    local OldFireServer
+    OldFireServer = hookfunction(Instance.new("RemoteEvent").FireServer, function(self, ...)
+        local args = {...}
+        if ShootEvent and self == ShootEvent then
+            task.spawn(function()
+                processHitmarkers(args[1])
+            end)
         end
-        
-        return OldNameCall(self, ...)
+        return OldFireServer(self, table.unpack(args))
     end)
 
     -- ===================== RENDER LOOP =====================
@@ -234,6 +232,7 @@ return function(GUI, S)
         Cursor.Position  = UDim2.new(0, Mouse.X, 0, Mouse.Y)
 
         local Target = Mouse.Target
+        -- Safety check to ensure looking at skybox doesn't crash the script
         if not Target or not Target.Parent then
             Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
             return
