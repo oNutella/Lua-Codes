@@ -14,7 +14,7 @@ return function(GUI, S)
     local TB           = GUI.TextBoxes
 
     -- ===================== DEFAULTS =====================
-    local DefaultCursorId     = "rbxassetid://3355815697" -- Updated to your inspired cursor
+    local DefaultCursorId     = "rbxassetid://3355815697" -- Restored your preferred cursor
     local DefaultSoundId      = "rbxassetid://1347140027"
     local DefaultHitmarkerId  = "rbxassetid://890801299"
     local DefaultCursorSize   = 85
@@ -171,7 +171,7 @@ return function(GUI, S)
         for _, bullet in pairs(bullets) do
             if typeof(bullet) ~= "table" then continue end
             
-            -- Dynamic safety check handles both bullet.Hit and bullet[3] structures safely
+            -- Checks both object array indices and named dictionaries safely
             local Hit = bullet.Hit or bullet[3]
             if not Hit or typeof(Hit) ~= "Instance" or not Hit.Parent then continue end
 
@@ -204,17 +204,19 @@ return function(GUI, S)
         end
     end
 
-    -- ===================== CLEAN METHOD HOOK =====================
-    -- Direct method hooking completely avoids __namecall environment corruption errors
-    local OldFireServer
-    OldFireServer = hookfunction(Instance.new("RemoteEvent").FireServer, function(self, ...)
-        local args = {...}
-        if ShootEvent and self == ShootEvent then
-            task.spawn(function()
-                processHitmarkers(args[1])
-            end)
+    -- ===================== SECURE INTERACTION HOOK =====================
+    local OldNameCall
+    OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
+        local method = getnamecallmethod()
+        
+        if method == "FireServer" and ShootEvent and self == ShootEvent then
+            local args = {...}
+            -- Processing on a deferred thread purely in Lua completely prevents 
+            -- namecall register corruption errors within your engine
+            task.spawn(processHitmarkers, args[1])
         end
-        return OldFireServer(self, table.unpack(args))
+        
+        return OldNameCall(self, ...)
     end)
 
     -- ===================== RENDER LOOP =====================
@@ -229,34 +231,4 @@ return function(GUI, S)
 
         UIS.MouseIconEnabled = false
         Cursor.Visible   = true
-        Cursor.Position  = UDim2.new(0, Mouse.X, 0, Mouse.Y)
-
-        local Target = Mouse.Target
-        -- Safety check to ensure looking at skybox doesn't crash the script
-        if not Target or not Target.Parent then
-            Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-            return
-        end
-
-        local Limb      = Target.Parent:FindFirstChildOfClass("Humanoid")
-        local Accessory = Target.Parent.Parent and Target.Parent.Parent:FindFirstChildOfClass("Humanoid")
-
-        if Limb then
-            local Player = Players:GetPlayerFromCharacter(Target.Parent)
-            if Player then
-                Cursor.ImageColor3 = Player.TeamColor == LocalPlayer.TeamColor
-                    and Color3.fromRGB(0, 255, 0)
-                    or  Color3.fromRGB(255, 0, 0)
-            end
-        elseif Accessory then
-            local Player = Players:GetPlayerFromCharacter(Target.Parent.Parent)
-            if Player then
-                Cursor.ImageColor3 = Player.TeamColor == LocalPlayer.TeamColor
-                    and Color3.fromRGB(0, 255, 0)
-                    or  Color3.fromRGB(255, 0, 0)
-            end
-        else
-            Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-        end
-    end)
-end
+        Cursor.Position  = UDim2.new(0, Mouse.X, 0, Mouse.
