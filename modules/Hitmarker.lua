@@ -161,7 +161,6 @@ return function(GUI, S)
         end)
     end
 
-    -- Added dynamic yield protection so early script initialization doesn't break it
     local Remotes    = ReplicatedStorage:WaitForChild("GunRemotes", 5) or ReplicatedStorage
     local ShootEvent = Remotes:WaitForChild("ShootEvent", 5)
     local Bindable   = Instance.new("BindableEvent")
@@ -206,13 +205,17 @@ return function(GUI, S)
         end
     end)
 
+    -- ===================== NETWORK HOOK =====================
     local OldNameCall
     OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
         local method = getnamecallmethod()
-        -- Robust checking to ensure ShootEvent was successfully bound
+        
         if ShootEvent and method == "FireServer" and self == ShootEvent then
-            Bindable:Fire(...)
+            -- Using standard dot notation avoids triggering a secondary namecall, 
+            -- keeping getnamecallmethod() intact for the game's original call.
+            Bindable.Fire(Bindable, ...)
         end
+        
         return OldNameCall(self, ...)
     end)
 
