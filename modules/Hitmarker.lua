@@ -179,7 +179,7 @@ end)
 -- ===============================================================
 
 local function createSoundEffect(id, volume)
-	task.spawn(function()
+	task.defer(function()
 		local sound = Instance.new("Sound")
 		sound.SoundId = id
 		sound.Volume = volume or 1
@@ -189,16 +189,15 @@ local function createSoundEffect(id, volume)
 	end)
 end
 
--- ===================== SAFE ASYNCHRONOUS PROCESSING =====================
+-- ===================== DEFERRED PROCESSING =====================
 local function processShotData(bulletsCopy)
 	if not isEnabled() then return end
 	local ShotHit = false
 
 	for _, bullet in pairs(bulletsCopy) do
 		local Hit = bullet.Hit
-		if not Hit or typeof(Hit) ~= "Instance" or not Hit.Parent then continue end
+		if not Hit or not Hit.Parent then continue end
 
-		-- Resolving logic inside an independent thread prevents any register leaks
 		local Limb      = Hit.Parent:FindFirstChildOfClass('Humanoid') ~= nil
 		local Accessory = Hit.Parent.Parent and Hit.Parent.Parent:FindFirstChildOfClass('Humanoid') ~= nil
 
@@ -235,20 +234,20 @@ OldNameCall = hookmetamethod(game, '__namecall', function(self, ...)
 	local method = getnamecallmethod()
 	local args = {...}
 
-	if method == 'FireServer' and ShootEvent and self == ShootEvent then
+	if method == 'FireServer' and self == ShootEvent then
 		local bullets = args[1]
 		if typeof(bullets) == "table" then
-			-- Instantly shallow copy references rawly without firing any internal colon methods
+			-- Create a quick detached snapshot data structure instantly
 			local bulletsCopy = {}
 			for k, v in pairs(bullets) do
 				if typeof(v) == "table" then
 					bulletsCopy[k] = {
-						Hit = v.Hit or v[3] or v.Instance
+						Hit = v[3] or v.Hit or v.Instance
 					}
 				end
 			end
-			-- Re-thread immediately to escape constraints and clean up namecall states
-			task.spawn(processShotData, bulletsCopy)
+			-- Postpones processing until the original FireServer has cleanly completed
+			task.defer(processShotData, bulletsCopy)
 		end
 	end
 
