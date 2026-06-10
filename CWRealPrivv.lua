@@ -2,6 +2,8 @@ local G2L = {};
 
 -- StarterGui.CWRealPrivv
 G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["IgnoreGuiInset"] = true;
+G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
 G2L["1"]["Name"] = [[CWRealPrivv]];
 G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
@@ -10,7 +12,8 @@ G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 G2L["2"] = Instance.new("ImageLabel", G2L["1"]);
 G2L["2"]["BorderSizePixel"] = 0;
 G2L["2"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
-G2L["2"]["Size"] = UDim2.new(0, 236, 0, 300);
+G2L["2"]["Image"] = [[rbxassetid://121279561804698]];
+G2L["2"]["Size"] = UDim2.new(0, 246, 0, 247);
 G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["2"]["Name"] = [[MainFrame]];
 G2L["2"]["Position"] = UDim2.new(0.42682, 0, 0.36264, 0);
@@ -41,40 +44,40 @@ G2L["7"] = Instance.new("ImageLabel", G2L["6"]);
 G2L["7"]["BorderSizePixel"] = 0;
 G2L["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["7"]["Image"] = [[rbxassetid://116830707628945]];
-G2L["7"]["Size"] = UDim2.new(0, 164, 0, 22);
+G2L["7"]["Size"] = UDim2.new(0, 148, 0, 19);
 G2L["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["7"]["BackgroundTransparency"] = 1;
 G2L["7"]["Name"] = [[RealPrivv]];
-G2L["7"]["Position"] = UDim2.new(0.15184, 0, 0.25895, 0);
-
-
--- StarterGui.CWRealPrivv.MainFrame.Elements.Title
-G2L["8"] = Instance.new("ImageLabel", G2L["6"]);
-G2L["8"]["BorderSizePixel"] = 0;
-G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["8"]["Image"] = [[rbxassetid://106022980722219]];
-G2L["8"]["Size"] = UDim2.new(0, 164, 0, 62);
-G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["8"]["BackgroundTransparency"] = 1;
-G2L["8"]["Name"] = [[Title]];
-G2L["8"]["Position"] = UDim2.new(0.13297, 0, 0.02895, 0);
-
-
--- StarterGui.CWRealPrivv.MainFrame.Elements.Title.ShineEffect
-G2L["9"] = Instance.new("LocalScript", G2L["8"]);
-G2L["9"]["Name"] = [[ShineEffect]];
+G2L["7"]["Position"] = UDim2.new(0.18436, 0, 0.31563, 0);
 
 
 -- StarterGui.CWRealPrivv.MainFrame.Elements.Nutella
-G2L["a"] = Instance.new("ImageLabel", G2L["6"]);
-G2L["a"]["BorderSizePixel"] = 0;
-G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["a"]["Image"] = [[rbxassetid://87572503322570]];
-G2L["a"]["Size"] = UDim2.new(0, 110, 0, 20);
-G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["a"]["BackgroundTransparency"] = 1;
-G2L["a"]["Name"] = [[Nutella]];
-G2L["a"]["Position"] = UDim2.new(0.37873, 0, 0.16895, 0);
+G2L["8"] = Instance.new("ImageLabel", G2L["6"]);
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["8"]["Image"] = [[rbxassetid://87572503322570]];
+G2L["8"]["Size"] = UDim2.new(0, 97, 0, 17);
+G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["BackgroundTransparency"] = 1;
+G2L["8"]["Name"] = [[Nutella]];
+G2L["8"]["Position"] = UDim2.new(0.39923, 0, 0.17919, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements.Title
+G2L["9"] = Instance.new("ImageLabel", G2L["6"]);
+G2L["9"]["BorderSizePixel"] = 0;
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["9"]["Image"] = [[rbxassetid://106022980722219]];
+G2L["9"]["Size"] = UDim2.new(0, 153, 0, 62);
+G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["9"]["BackgroundTransparency"] = 1;
+G2L["9"]["Name"] = [[Title]];
+G2L["9"]["Position"] = UDim2.new(0.16618, 0, 0.0249, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements.Title.ShineEffect
+G2L["a"] = Instance.new("LocalScript", G2L["9"]);
+G2L["a"]["Name"] = [[ShineEffect]];
 
 
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes
@@ -84,7 +87,6 @@ G2L["b"]["Name"] = [[TextBoxes]];
 
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunSoundID
 G2L["c"] = Instance.new("TextBox", G2L["b"]);
-G2L["c"]["CursorPosition"] = -1;
 G2L["c"]["Name"] = [[GunSoundID]];
 G2L["c"]["BorderSizePixel"] = 0;
 G2L["c"]["TextWrapped"] = true;
@@ -95,9 +97,9 @@ G2L["c"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
 G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 G2L["c"]["PlaceholderText"] = [[Gun Sound Changer ID]];
 G2L["c"]["Size"] = UDim2.new(0, 224, 0, 21);
-G2L["c"]["Position"] = UDim2.new(0.018, 0, 0.6, 0);
+G2L["c"]["Position"] = UDim2.new(0.042, 0, 0.66883, 0);
 G2L["c"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
-G2L["c"]["Text"] = [[]];
+G2L["c"]["Text"] = [[125838762216299]];
 
 
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunSoundID.GunSoundIDController
@@ -107,7 +109,6 @@ G2L["d"]["Name"] = [[GunSoundIDController]];
 
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorID
 G2L["e"] = Instance.new("TextBox", G2L["b"]);
-G2L["e"]["CursorPosition"] = -1;
 G2L["e"]["Name"] = [[CursorID]];
 G2L["e"]["BorderSizePixel"] = 0;
 G2L["e"]["TextWrapped"] = true;
@@ -118,9 +119,9 @@ G2L["e"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
 G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 G2L["e"]["PlaceholderText"] = [[Cursor ID]];
 G2L["e"]["Size"] = UDim2.new(0, 224, 0, 21);
-G2L["e"]["Position"] = UDim2.new(0.022, 0, 0.4, 0);
+G2L["e"]["Position"] = UDim2.new(0.04639, 0, 0.46883, 0);
 G2L["e"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
-G2L["e"]["Text"] = [[]];
+G2L["e"]["Text"] = [[2025732283]];
 
 
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorID.CursorController
@@ -128,10 +129,9 @@ G2L["f"] = Instance.new("LocalScript", G2L["e"]);
 G2L["f"]["Name"] = [[CursorController]];
 
 
--- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorSize
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunVolume
 G2L["10"] = Instance.new("TextBox", G2L["b"]);
-G2L["10"]["CursorPosition"] = -1;
-G2L["10"]["Name"] = [[CursorSize]];
+G2L["10"]["Name"] = [[GunVolume]];
 G2L["10"]["BorderSizePixel"] = 0;
 G2L["10"]["TextWrapped"] = true;
 G2L["10"]["TextSize"] = 14;
@@ -139,85 +139,37 @@ G2L["10"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 G2L["10"]["TextScaled"] = true;
 G2L["10"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
 G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["10"]["PlaceholderText"] = [[Cursor Size]];
+G2L["10"]["PlaceholderText"] = [[Gun Volume]];
 G2L["10"]["Size"] = UDim2.new(0, 224, 0, 21);
-G2L["10"]["Position"] = UDim2.new(0.022, 0, 0.5, 0);
+G2L["10"]["Position"] = UDim2.new(0.042, 0, 0.76883, 0);
 G2L["10"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
 G2L["10"]["Text"] = [[]];
 
 
--- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunVolume
-G2L["11"] = Instance.new("TextBox", G2L["b"]);
-G2L["11"]["Name"] = [[GunVolume]];
-G2L["11"]["BorderSizePixel"] = 0;
-G2L["11"]["TextWrapped"] = true;
-G2L["11"]["TextSize"] = 14;
-G2L["11"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["11"]["TextScaled"] = true;
-G2L["11"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
-G2L["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["11"]["PlaceholderText"] = [[Gun Volume]];
-G2L["11"]["Size"] = UDim2.new(0, 224, 0, 21);
-G2L["11"]["Position"] = UDim2.new(0.018, 0, 0.7, 0);
-G2L["11"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
-G2L["11"]["Text"] = [[]];
-
-
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunVolume.GunVolumeController
-G2L["12"] = Instance.new("LocalScript", G2L["11"]);
-G2L["12"]["Name"] = [[GunVolumeController]];
+G2L["11"] = Instance.new("LocalScript", G2L["10"]);
+G2L["11"]["Name"] = [[GunVolumeController]];
 
 
--- StarterGui.CWRealPrivv.MainFrame.Buttons
-G2L["13"] = Instance.new("Folder", G2L["2"]);
-G2L["13"]["Name"] = [[Buttons]];
-
-
--- StarterGui.CWRealPrivv.MainFrame.Buttons.ConfigManager
-G2L["14"] = Instance.new("LocalScript", G2L["13"]);
-G2L["14"]["Name"] = [[ConfigManager]];
-
-
--- StarterGui.CWRealPrivv.MainFrame.Buttons.SaveSettings
-G2L["15"] = Instance.new("TextButton", G2L["13"]);
-G2L["15"]["TextWrapped"] = true;
-G2L["15"]["Active"] = false;
-G2L["15"]["BorderSizePixel"] = 0;
-G2L["15"]["TextSize"] = 60;
-G2L["15"]["TextScaled"] = true;
-G2L["15"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["15"]["BackgroundColor3"] = Color3.fromRGB(101, 101, 101);
-G2L["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["15"]["Selectable"] = false;
-G2L["15"]["Size"] = UDim2.new(0, 224, 0, 20);
-G2L["15"]["ClipsDescendants"] = true;
-G2L["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["15"]["Text"] = [[Save Settings]];
-G2L["15"]["Name"] = [[SaveSettings]];
-G2L["15"]["Position"] = UDim2.new(0.02194, 0, 0.81055, 0);
-
-
--- StarterGui.CWRealPrivv.MainFrame.Buttons.LoadSettings
-G2L["16"] = Instance.new("TextButton", G2L["13"]);
-G2L["16"]["TextWrapped"] = true;
-G2L["16"]["Active"] = false;
-G2L["16"]["BorderSizePixel"] = 0;
-G2L["16"]["TextSize"] = 60;
-G2L["16"]["TextScaled"] = true;
-G2L["16"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["16"]["BackgroundColor3"] = Color3.fromRGB(101, 101, 101);
-G2L["16"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["16"]["Selectable"] = false;
-G2L["16"]["Size"] = UDim2.new(0, 224, 0, 20);
-G2L["16"]["ClipsDescendants"] = true;
-G2L["16"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["16"]["Text"] = [[Load Settings]];
-G2L["16"]["Name"] = [[LoadSettings]];
-G2L["16"]["Position"] = UDim2.new(0.02194, 0, 0.89901, 0);
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorSize
+G2L["12"] = Instance.new("TextBox", G2L["b"]);
+G2L["12"]["Name"] = [[CursorSize]];
+G2L["12"]["BorderSizePixel"] = 0;
+G2L["12"]["TextWrapped"] = true;
+G2L["12"]["TextSize"] = 14;
+G2L["12"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["12"]["TextScaled"] = true;
+G2L["12"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+G2L["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["12"]["PlaceholderText"] = [[Cursor Size]];
+G2L["12"]["Size"] = UDim2.new(0, 224, 0, 21);
+G2L["12"]["Position"] = UDim2.new(0.046, 0, 0.56883, 0);
+G2L["12"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
+G2L["12"]["Text"] = [[70]];
 
 
 -- StarterGui.CWRealPrivv.MainFrame.UICorner
-G2L["17"] = Instance.new("UICorner", G2L["2"]);
+G2L["13"] = Instance.new("UICorner", G2L["2"]);
 
 
 
@@ -422,8 +374,8 @@ local script = G2L["5"];
 end;
 task.spawn(C_5);
 -- StarterGui.CWRealPrivv.MainFrame.Elements.Title.ShineEffect
-local function C_9()
-local script = G2L["9"];
+local function C_a()
+local script = G2L["a"];
 	local RunService = game:GetService("RunService")
 	local label    = script.Parent
 	local gradient = Instance.new("UIGradient")
@@ -560,7 +512,7 @@ local script = G2L["9"];
 		)
 	end)
 end;
-task.spawn(C_9);
+task.spawn(C_a);
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunSoundID.GunSoundIDController
 local function C_d()
 local script = G2L["d"];
@@ -676,11 +628,23 @@ local script = G2L["d"];
 	end)
 	
 	-- ── TextBox handler ───────────────────────────────────────────────────────
+	local initialParsed = toAssetId(textBox.Text)
+	local lastValidId = initialParsed and (initialParsed:match("%d+") or "") or ""
 	
 	textBox.FocusLost:Connect(function()
-		local parsed = toAssetId(textBox.Text)
-		if not parsed and textBox.Text ~= "" then
-			textBox.Text = ""
+		local trimmed = textBox.Text:match("^%s*(.-)%s*$")
+		if trimmed == "" then
+			-- Empty input — restore to last valid
+			textBox.Text = lastValidId
+		else
+			local parsed = toAssetId(trimmed)
+			if parsed then
+				lastValidId = parsed:match("%d+") or ""
+				textBox.Text = lastValidId
+			else
+				-- Garbage input — restore to last valid
+				textBox.Text = lastValidId
+			end
 		end
 		scanAll()
 	end)
@@ -703,7 +667,7 @@ local script = G2L["d"];
 		end
 	end)
 	
-	-- Initial scan
+	-- Initial scan (auto-applies the pre-filled default GunSoundID)
 	scanAll()
 	
 end;
@@ -711,28 +675,82 @@ task.spawn(C_d);
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorID.CursorController
 local function C_f()
 local script = G2L["f"];
-	-- Cursor Changer — CWRealPrivv
+	-- Cursor Changer V2 — CWRealPrivv  (minimum-latency ImageLabel variant)
 	-- CursorID   → custom cursor image asset ID
-	-- CursorSize → size in pixels (default 85, min 1)
+	-- CursorSize → size in pixels (default 85)
 	-- Both empty = native cursor restored.
+	--
+	-- Architecture: TWO-TRACK + ImageLabel always follows cursor
+	--
+	--   TRACK A — Normal play:
+	--             UserInputService.MouseIconEnabled = false  (cheapest suppression)
+	--             ImageLabel positioned every PreRender via InputChanged cache.
+	--             Mouse position cached on every InputChanged — PreRender writes
+	--             UDim2 once per frame using the freshest available coordinate.
+	--             GuiInset cached once at startup (updated via signal if it ever changes).
+	--
+	--   TRACK B — Sniper scoped (LockCenter):
+	--             ImageLabel pinned at UDim2.new(0.5, 0, 0.5, 0) — screen center.
+	--             Position write skipped entirely (no mouse movement during lock).
+	--
+	-- Per-frame PreRender cost (steady state, cursor not over new target):
+	--   • ONE UDim2.fromOffset write  (Track A only)
+	--   • ONE Mouse.Target read (cached — skips all FindFirstChildOfClass work if unchanged)
+	--   • ZERO Color3 allocations (pre-allocated constants)
+	--   • ZERO GuiInset calls (cached at startup, +inset added in InputChanged)
+	--   • ZERO TeamColor reads (cached via signal)
 	
-	local textBox     = script.Parent
-	local TextBoxes   = textBox.Parent
-	local CursorSizeBox = TextBoxes:WaitForChild("CursorSize")
-	
+	local textBox          = script.Parent
+	local TextBoxes        = textBox.Parent
 	local Players          = game:GetService("Players")
 	local RunService       = game:GetService("RunService")
 	local UserInputService = game:GetService("UserInputService")
+	local GuiService       = game:GetService("GuiService")
 	local LocalPlayer      = Players.LocalPlayer
 	local Mouse            = LocalPlayer:GetMouse()
 	
-	local DEFAULT_SIZE = 85
+	-- ── Pre-allocated Color3 constants — zero allocations per frame ───────────
+	local COLOR_WHITE = Color3.fromRGB(255, 255, 255)
+	local COLOR_GREEN = Color3.fromRGB(0,   255, 0  )
+	local COLOR_RED   = Color3.fromRGB(255, 0,   0  )
 	
-	-- Build overlay ScreenGui in CoreGui
+	-- ── GuiInset — cached once, updated via signal ────────────────────────────
+	-- input.Position (MouseMovement) = inset-space: origin is BELOW the topbar.
+	-- IgnoreGuiInset=true ScreenGui = viewport-space: origin at absolute top-left.
+	-- Conversion: ScreenGui position = input.Position + GuiInset.
+	local _insetX, _insetY = GuiService:GetGuiInset().X, GuiService:GetGuiInset().Y
+	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
+		local inset = GuiService:GetGuiInset()
+		_insetX = inset.X
+		_insetY = inset.Y
+	end)
+	
+	-- ── Mouse position cache — written on InputChanged, read in PreRender ─────
+	local _mx, _my = 0, 0
+	UserInputService.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			_mx = input.Position.X + _insetX
+			_my = input.Position.Y + _insetY
+		end
+	end)
+	
+	-- ── TeamColor cache — updated via signal, read in PreRender ───────────────
+	local _myTeamColor = LocalPlayer.TeamColor
+	LocalPlayer:GetPropertyChangedSignal("TeamColor"):Connect(function()
+		_myTeamColor = LocalPlayer.TeamColor
+	end)
+	
+	-- ── Mouse.Target cache — only recompute tint when target changes ──────────
+	local _lastTarget    = nil
+	local _lastTintColor = COLOR_WHITE
+	
+	-- ── ScreenGui + ImageLabel — always on top, always visible in Track A ─────
 	local IAPortable = Instance.new("ScreenGui")
 	IAPortable.Name           = "CWPrivv_Cursor"
 	IAPortable.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	IAPortable.ResetOnSpawn   = false
+	IAPortable.IgnoreGuiInset = true
+	IAPortable.DisplayOrder   = 9999
 	IAPortable.Parent         = game:GetService("CoreGui")
 	
 	local Cursor = Instance.new("ImageLabel")
@@ -740,13 +758,13 @@ local script = G2L["f"];
 	Cursor.Parent                 = IAPortable
 	Cursor.AnchorPoint            = Vector2.new(0.5, 0.5)
 	Cursor.BackgroundTransparency = 1
-	Cursor.Size                   = UDim2.new(0, DEFAULT_SIZE, 0, DEFAULT_SIZE)
+	Cursor.Size                   = UDim2.new(0, 85, 0, 85)
 	Cursor.Image                  = ""
 	Cursor.ScaleType              = Enum.ScaleType.Fit
 	Cursor.Visible                = false
+	Cursor.Position               = UDim2.new(0, 0, 0, 0)
 	
 	-- ── Parsing helpers ───────────────────────────────────────────────────────
-	
 	local function toAssetId(input)
 		input = input:match("^%s*(.-)%s*$")
 		if input:match("^%d+$") then
@@ -757,113 +775,171 @@ local script = G2L["f"];
 		return nil
 	end
 	
-	local function getActiveSize()
-		local n = tonumber(CursorSizeBox.Text)
-		if n and n >= 1 then
-			return math.floor(n)
+	local function parseSize(input)
+		input = input:match("^%s*(.-)%s*$")
+		local n = tonumber(input)
+		if n and n >= 1 then return math.floor(n) end
+		return nil
+	end
+	
+	-- ── Cached config state ───────────────────────────────────────────────────
+	local _cursorId   = toAssetId(textBox.Text)
+	local _cursorSize = 70
+	
+	local CursorSizeBox = TextBoxes:FindFirstChild("CursorSize")
+	
+	local function applySize()
+		if CursorSizeBox then
+			local s = parseSize(CursorSizeBox.Text)
+			if s then
+				_cursorSize = s
+			else
+				_cursorSize = 70
+			end
 		end
-		return DEFAULT_SIZE
+		Cursor.Size = UDim2.new(0, _cursorSize, 0, _cursorSize)
 	end
 	
 	local function isEnabled()
-		return toAssetId(textBox.Text) ~= nil
+		return _cursorId ~= nil
 	end
 	
-	local function getActiveCursorId()
-		return toAssetId(textBox.Text)
-	end
+	-- ── Track switcher ────────────────────────────────────────────────────────
+	local _sniperActive = UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
 	
-	-- ── Apply size immediately ────────────────────────────────────────────────
-	
-	local function applySize()
-		local s = getActiveSize()
-		Cursor.Size = UDim2.new(0, s, 0, s)
-	end
-	
-	-- ── TextBox handlers ──────────────────────────────────────────────────────
-	
-	textBox.FocusLost:Connect(function()
-		local parsed = toAssetId(textBox.Text)
-		if parsed then
-			Cursor.Image = parsed
-		elseif textBox.Text ~= "" then
-			textBox.Text = ""
-		end
-	end)
-	
-	CursorSizeBox.FocusLost:Connect(function()
-		local n = tonumber(CursorSizeBox.Text)
-		if n and n >= 1 then
-			CursorSizeBox.Text = tostring(math.floor(n))
-		else
-			CursorSizeBox.Text = ""
-		end
-		applySize()
-	end)
-	
-	-- ── RenderStepped: position + color tinting ───────────────────────────────
-	
-	RunService.RenderStepped:Connect(function()
+	local function applyTrack()
 		if not isEnabled() then
 			UserInputService.MouseIconEnabled = true
 			Cursor.Visible = false
 			return
 		end
 	
-		-- Keep image and size current (handles auto-load setting Text directly)
-		local id = getActiveCursorId()
-		if id and Cursor.Image ~= id then
-			Cursor.Image = id
-		end
-		applySize()
-	
+		-- Both tracks: suppress the native OS cursor cheaply
 		UserInputService.MouseIconEnabled = false
-		Cursor.Visible  = true
-		Cursor.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y)
+		Cursor.Image   = _cursorId
+		Cursor.Visible = true
 	
-		local Target = Mouse.Target
-		if not Target or not Target.Parent then
-			Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-			return
+		if _sniperActive then
+			-- Track B: pin to screen center, PreRender won't touch Position
+			Cursor.Position = UDim2.new(0.5, 0, 0.5, 0)
 		end
+		-- Track A: PreRender will position on next frame via InputChanged cache
+	end
 	
-		local Limb      = Target.Parent:FindFirstChildOfClass("Humanoid")
-		local Accessory = Target.Parent.Parent
-			and Target.Parent.Parent:FindFirstChildOfClass("Humanoid")
-	
-		if Limb then
-			local Player = Players:GetPlayerFromCharacter(Target.Parent)
-			if Player then
-				Cursor.ImageColor3 = Player.TeamColor == LocalPlayer.TeamColor
-					and Color3.fromRGB(0, 255, 0)
-					or  Color3.fromRGB(255, 0, 0)
-			else
-				Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-			end
-		elseif Accessory then
-			local Player = Players:GetPlayerFromCharacter(Target.Parent.Parent)
-			if Player then
-				Cursor.ImageColor3 = Player.TeamColor == LocalPlayer.TeamColor
-					and Color3.fromRGB(0, 255, 0)
-					or  Color3.fromRGB(255, 0, 0)
-			else
-				Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-			end
-		else
-			Cursor.ImageColor3 = Color3.fromRGB(255, 255, 255)
-		end
+	UserInputService:GetPropertyChangedSignal("MouseBehavior"):Connect(function()
+		_sniperActive = UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
+		applyTrack()
 	end)
 	
-	-- Expose applySize globally so ConfigManager can trigger cursor size update without firesignal
-	_G.cwprivv_applyCursorSize = applySize
+	-- ── TextBox handlers ──────────────────────────────────────────────────────
+	local lastValidId = _cursorId and (_cursorId:match("%d+") or "") or ""
+	
+	textBox.FocusLost:Connect(function()
+		local trimmed = textBox.Text:match("^%s*(.-)%s*$")
+		if trimmed == "" then
+			-- Empty input — restore to last valid
+			textBox.Text = lastValidId
+			_cursorId = lastValidId ~= "" and toAssetId(lastValidId) or nil
+		else
+			local parsed = toAssetId(trimmed)
+			if parsed then
+				lastValidId = parsed:match("%d+") or ""
+				_cursorId = parsed
+				textBox.Text = lastValidId
+			else
+				-- Garbage input — restore to last valid
+				textBox.Text = lastValidId
+				_cursorId = lastValidId ~= "" and toAssetId(lastValidId) or nil
+			end
+		end
+		Cursor.Image = _cursorId or ""
+		applyTrack()
+	end)
+	
+	local lastValidSize = CursorSizeBox and CursorSizeBox.Text ~= "" and CursorSizeBox.Text or "70"
+	
+	if CursorSizeBox then
+		CursorSizeBox.FocusLost:Connect(function()
+			local trimmed = CursorSizeBox.Text:match("^%s*(.-)%s*$")
+			if trimmed == "" then
+				-- Empty input — restore to last valid
+				CursorSizeBox.Text = lastValidSize
+			else
+				local s = parseSize(trimmed)
+				if s then
+					lastValidSize = tostring(s)
+				else
+					-- Garbage input — restore to last valid
+					CursorSizeBox.Text = lastValidSize
+				end
+			end
+			applySize()
+		end)
+	end
+	
+	-- ── PreRender: position (Track A) + color tinting ────────────────────────
+	-- This callback is the LAST Lua signal before the GPU draw call.
+	-- Steady-state cost: 1 UDim2 write + 1 Target read. Everything else is cached.
+	
+	RunService.PreRender:Connect(function()
+		if not isEnabled() then return end
+	
+		-- Track A: update ImageLabel position from InputChanged cache
+		if not _sniperActive then
+			Cursor.Position = UDim2.fromOffset(_mx, _my)
+		end
+	
+		-- Color tinting — skip all work if Mouse.Target hasn't changed
+		local Target = Mouse.Target
+		if Target ~= _lastTarget then
+			_lastTarget = Target
+	
+			if not Target or not Target.Parent then
+				_lastTintColor = COLOR_WHITE
+			else
+				local Limb      = Target.Parent:FindFirstChildOfClass("Humanoid")
+				local Accessory = Target.Parent.Parent
+					and Target.Parent.Parent:FindFirstChildOfClass("Humanoid")
+	
+				local tintPlayer = nil
+				if Limb then
+					tintPlayer = Players:GetPlayerFromCharacter(Target.Parent)
+				elseif Accessory then
+					tintPlayer = Players:GetPlayerFromCharacter(Target.Parent.Parent)
+				end
+	
+				if tintPlayer then
+					_lastTintColor = tintPlayer.TeamColor == _myTeamColor
+						and COLOR_GREEN
+						or  COLOR_RED
+					else
+						_lastTintColor = COLOR_WHITE
+					end
+			end
+		end
+	
+		Cursor.ImageColor3 = _lastTintColor
+	end)
+	
+	-- Apply initial state + auto-apply defaults on load
+	local parsed = toAssetId(textBox.Text)
+	_cursorId = parsed
+	if parsed then
+		Cursor.Image = parsed
+	end
+	applySize()
+	applyTrack()
+	
+	-- Expose for ConfigManager Tier 3 fallback
+	_G.cwprivv_applyCursorId = applyTrack
 	
 end;
 task.spawn(C_f);
 -- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunVolume.GunVolumeController
-local function C_12()
-local script = G2L["12"];
+local function C_11()
+local script = G2L["11"];
 	-- Gun Volume Controller — CWRealPrivv
-	-- Overrides the volume of every ShootSound and ReloadSound in workspace.
+	-- Overrides the volume of ShootSound and SecondarySound (firing sounds only).
 	-- Empty/invalid = all sounds restored to their original volume.
 	-- Applies to ALL players (own + others). Range: 0–10.
 	
@@ -872,7 +948,7 @@ local script = G2L["12"];
 	local RunService  = game:GetService("RunService")
 	local LocalPlayer = Players.LocalPlayer
 	
-	local TARGET_NAMES = { ShootSound = true, ReloadSound = true }
+	local TARGET_NAMES = { ShootSound = true, SecondarySound = true }
 	
 	-- overrideData[sound] = { conn, originalVolume }
 	local overrideData = {}
@@ -967,13 +1043,30 @@ local script = G2L["12"];
 	end)
 	
 	-- ── TextBox handler ───────────────────────────────────────────────────────
+	local lastValidVol = tonumber(textBox.Text)
 	
 	textBox.FocusLost:Connect(function()
-		local n = tonumber(textBox.Text)
-		if n then
-			textBox.Text = tostring(math.clamp(n, 0, 10))
-		elseif textBox.Text ~= "" then
-			textBox.Text = ""
+		local trimmed = textBox.Text:match("^%s*(.-)%s*$")
+		if trimmed == "" then
+			-- Empty input — restore to last valid
+			if lastValidVol ~= nil then
+				textBox.Text = tostring(lastValidVol)
+			else
+				textBox.Text = ""
+			end
+		else
+			local n = tonumber(trimmed)
+			if n and n >= 0 and n <= 10 then
+				lastValidVol = n
+				textBox.Text = tostring(n)
+			else
+				-- Garbage input — restore to last valid
+				if lastValidVol ~= nil then
+					textBox.Text = tostring(lastValidVol)
+				else
+					textBox.Text = ""
+				end
+			end
 		end
 		scanAll()
 	end)
@@ -1000,178 +1093,6 @@ local script = G2L["12"];
 	scanAll()
 	
 end;
-task.spawn(C_12);
--- StarterGui.CWRealPrivv.MainFrame.Buttons.ConfigManager
-local function C_14()
-local script = G2L["14"];
-	-- ConfigManager — CWRealPrivv
-	-- SaveSettings  → writefile("CWRealPrivv.json", ...)
-	-- LoadSettings  → readfile + apply
-	-- Auto-load     → runs immediately on startup, silently applies saved config if file exists
-	
-	local HttpService = game:GetService("HttpService")
-	local Players     = game:GetService("Players")
-	
-	local player    = Players.LocalPlayer
-	local PlayerGui = player:WaitForChild("PlayerGui")
-	local Root      = PlayerGui:WaitForChild("CWRealPrivv")
-	local MainFrame = Root:WaitForChild("MainFrame")
-	
-	local TextBoxes = MainFrame:WaitForChild("TextBoxes")
-	local Buttons   = MainFrame:WaitForChild("Buttons")
-	
-	local CursorIDBox  = TextBoxes:WaitForChild("CursorID")
-	local GunSoundIDBox = TextBoxes:WaitForChild("GunSoundID")
-	
-	local CursorSizeBox  = TextBoxes:WaitForChild("CursorSize")
-	local GunVolumeBox   = TextBoxes:WaitForChild("GunVolume")
-	local SaveBtn = Buttons:WaitForChild("SaveSettings")
-	local LoadBtn = Buttons:WaitForChild("LoadSettings")
-	
-	local CONFIG_PATH = "CWRealPrivv.json"
-	
-	-- ── Helpers ───────────────────────────────────────────────────────────────
-	
-	-- Three-tier FocusLost trigger — no firesignal required.
-	-- Tier 1: firesignal (best, most executors)
-	-- Tier 2: CaptureFocus + ReleaseFocus (Roblox native)
-	-- Tier 3: _G scan functions (always works, executor-independent)
-	local function triggerFocusLost(textBox)
-		-- Tier 1: firesignal
-		local ok = pcall(function()
-			firesignal(textBox.FocusLost, false)
-		end)
-		if ok then return end
-	
-		-- Tier 2: CaptureFocus + ReleaseFocus
-		ok = pcall(function()
-			textBox:CaptureFocus()
-			textBox:ReleaseFocus(false)
-		end)
-		if ok then return end
-	
-		-- Tier 3: _G scan functions — directly call the feature script's
-		-- scanAll/applySize so it reacts to the new Text value immediately
-		if textBox == CursorIDBox then
-			pcall(function() if _G.cwprivv_applyCursorSize then _G.cwprivv_applyCursorSize() end end)
-		elseif textBox == CursorSizeBox then
-			pcall(function() if _G.cwprivv_applyCursorSize then _G.cwprivv_applyCursorSize() end end)
-		elseif textBox == GunSoundIDBox then
-			pcall(function() if _G.cwprivv_scanGunSound then _G.cwprivv_scanGunSound() end end)
-		elseif textBox == GunVolumeBox then
-			pcall(function() if _G.cwprivv_scanGunVolume then _G.cwprivv_scanGunVolume() end end)
-		end
-	end
-	
-	local function setBox(textBox, value)
-		if value and value ~= "" then
-			textBox.Text = tostring(value)
-			triggerFocusLost(textBox)
-		end
-	end
-	
-	-- ── Save ──────────────────────────────────────────────────────────────────
-	
-	local function saveConfig()
-		local config = {
-			cursorID   = CursorIDBox.Text,
-			cursorSize = CursorSizeBox.Text,
-			gunSoundID = GunSoundIDBox.Text,
-			gunVolume  = GunVolumeBox.Text,
-		}
-		local ok, err = pcall(writefile, CONFIG_PATH, HttpService:JSONEncode(config))
-		if ok then
-			print("[CWRealPrivv] Config saved to " .. CONFIG_PATH)
-			-- Brief visual feedback on the button
-			local orig = SaveBtn.Text
-			SaveBtn.Text = "Saved!"
-			task.delay(1.2, function() SaveBtn.Text = orig end)
-		else
-			warn("[CWRealPrivv] Save failed: " .. tostring(err))
-			SaveBtn.Text = "Save Failed"
-			task.delay(1.5, function() SaveBtn.Text = "Save Settings" end)
-		end
-	end
-	
-	-- ── Apply config data ─────────────────────────────────────────────────────
-	
-	local function applyConfig(data)
-		if type(data) ~= "table" then return end
-		setBox(CursorIDBox,   data.cursorID)
-		setBox(CursorSizeBox, data.cursorSize)
-		setBox(GunSoundIDBox, data.gunSoundID)
-		setBox(GunVolumeBox,  data.gunVolume)
-	end
-	
-	-- ── Load (manual) ─────────────────────────────────────────────────────────
-	
-	local function loadConfig()
-		local fileExists = pcall(function()
-			assert(isfile(CONFIG_PATH))
-		end)
-		if not fileExists then
-			warn("[CWRealPrivv] No config file found.")
-			LoadBtn.Text = "No File Found"
-			task.delay(1.5, function() LoadBtn.Text = "Load Settings" end)
-			return
-		end
-	
-		local ok, data = pcall(function()
-			return HttpService:JSONDecode(readfile(CONFIG_PATH))
-		end)
-	
-		if not ok or type(data) ~= "table" then
-			warn("[CWRealPrivv] Failed to parse config.")
-			LoadBtn.Text = "Parse Error"
-			task.delay(1.5, function() LoadBtn.Text = "Load Settings" end)
-			return
-		end
-	
-		applyConfig(data)
-		print("[CWRealPrivv] Config loaded from " .. CONFIG_PATH)
-		local orig = LoadBtn.Text
-		LoadBtn.Text = "Loaded!"
-		task.delay(1.2, function() LoadBtn.Text = orig end)
-	end
-	
-	-- ── Auto-load on startup ──────────────────────────────────────────────────
-	-- Runs immediately — no loading animation to wait for.
-	-- Silently checks for the file and applies if found.
-	
-	task.spawn(function()
-		-- Small yield so all feature scripts (CursorController, GunSoundIDController)
-		-- have time to initialize their FocusLost connections before we trigger them
-		task.wait(1)
-	
-		local fileExists = false
-		pcall(function()
-			fileExists = isfile(CONFIG_PATH)
-		end)
-	
-		if not fileExists then
-			print("[CWRealPrivv] No saved config found, starting fresh.")
-			return
-		end
-	
-		local ok, data = pcall(function()
-			return HttpService:JSONDecode(readfile(CONFIG_PATH))
-		end)
-	
-		if not ok or type(data) ~= "table" then
-			warn("[CWRealPrivv] Auto-load: failed to parse config.")
-			return
-		end
-	
-		applyConfig(data)
-		print("[CWRealPrivv] Auto-loaded config from " .. CONFIG_PATH)
-	end)
-	
-	-- ── Button wires ──────────────────────────────────────────────────────────
-	
-	SaveBtn.MouseButton1Click:Connect(saveConfig)
-	LoadBtn.MouseButton1Click:Connect(loadConfig)
-	
-end;
-task.spawn(C_14);
+task.spawn(C_11);
 
 return G2L["1"], require;
