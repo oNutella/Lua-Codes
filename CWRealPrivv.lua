@@ -1,7 +1,152 @@
--- UICore — CWRealPrivv
--- Single merged LocalScript: Drag, UIToggle, ShineEffect,
--- GunSoundIDController, GunVolumeController, CursorController
--- External executor mode: paths resolved via PlayerGui, no script.Parent
+-- Interface
+
+local G2L = {};
+
+-- StarterGui.CWRealPrivv
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["IgnoreGuiInset"] = true;
+G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
+G2L["1"]["Name"] = [[CWRealPrivv]];
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+-- StarterGui.CWRealPrivv.MainFrame
+G2L["2"] = Instance.new("ImageLabel", G2L["1"]);
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
+G2L["2"]["Image"] = [[rbxassetid://121279561804698]];
+G2L["2"]["Size"] = UDim2.new(0, 246, 0, 247);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Name"] = [[MainFrame]];
+G2L["2"]["Position"] = UDim2.new(0.42682, 0, 0.36264, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements
+G2L["3"] = Instance.new("Folder", G2L["2"]);
+G2L["3"]["Name"] = [[Elements]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements.RealPrivv
+G2L["4"] = Instance.new("ImageLabel", G2L["3"]);
+G2L["4"]["BorderSizePixel"] = 0;
+G2L["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["4"]["Image"] = [[rbxassetid://116830707628945]];
+G2L["4"]["Size"] = UDim2.new(0, 148, 0, 19);
+G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["4"]["BackgroundTransparency"] = 1;
+G2L["4"]["Name"] = [[RealPrivv]];
+G2L["4"]["Position"] = UDim2.new(0.18436, 0, 0.31563, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements.Nutella
+G2L["5"] = Instance.new("ImageLabel", G2L["3"]);
+G2L["5"]["BorderSizePixel"] = 0;
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["5"]["Image"] = [[rbxassetid://87572503322570]];
+G2L["5"]["Size"] = UDim2.new(0, 97, 0, 17);
+G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["5"]["BackgroundTransparency"] = 1;
+G2L["5"]["Name"] = [[Nutella]];
+G2L["5"]["Position"] = UDim2.new(0.39923, 0, 0.17919, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.Elements.Title
+G2L["6"] = Instance.new("ImageLabel", G2L["3"]);
+G2L["6"]["BorderSizePixel"] = 0;
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["6"]["Image"] = [[rbxassetid://106022980722219]];
+G2L["6"]["Size"] = UDim2.new(0, 153, 0, 62);
+G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["6"]["BackgroundTransparency"] = 1;
+G2L["6"]["Name"] = [[Title]];
+G2L["6"]["Position"] = UDim2.new(0.16618, 0, 0.0249, 0);
+
+
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes
+G2L["7"] = Instance.new("Folder", G2L["2"]);
+G2L["7"]["Name"] = [[TextBoxes]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunSoundID
+G2L["8"] = Instance.new("TextBox", G2L["7"]);
+G2L["8"]["Name"] = [[GunSoundID]];
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["TextWrapped"] = true;
+G2L["8"]["TextSize"] = 14;
+G2L["8"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["8"]["TextScaled"] = true;
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+G2L["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["8"]["PlaceholderText"] = [[Gun Sound Changer ID]];
+G2L["8"]["Size"] = UDim2.new(0, 224, 0, 21);
+G2L["8"]["Position"] = UDim2.new(0.042, 0, 0.66883, 0);
+G2L["8"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
+G2L["8"]["Text"] = [[125838762216299]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorID
+G2L["9"] = Instance.new("TextBox", G2L["7"]);
+G2L["9"]["Name"] = [[CursorID]];
+G2L["9"]["BorderSizePixel"] = 0;
+G2L["9"]["TextWrapped"] = true;
+G2L["9"]["TextSize"] = 14;
+G2L["9"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["9"]["TextScaled"] = true;
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+G2L["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["9"]["PlaceholderText"] = [[Cursor ID]];
+G2L["9"]["Size"] = UDim2.new(0, 224, 0, 21);
+G2L["9"]["Position"] = UDim2.new(0.04639, 0, 0.46883, 0);
+G2L["9"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
+G2L["9"]["Text"] = [[2025732283]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.GunVolume
+G2L["a"] = Instance.new("TextBox", G2L["7"]);
+G2L["a"]["Name"] = [[GunVolume]];
+G2L["a"]["BorderSizePixel"] = 0;
+G2L["a"]["TextWrapped"] = true;
+G2L["a"]["TextSize"] = 14;
+G2L["a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["a"]["TextScaled"] = true;
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+G2L["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["a"]["PlaceholderText"] = [[Gun Volume]];
+G2L["a"]["Size"] = UDim2.new(0, 224, 0, 21);
+G2L["a"]["Position"] = UDim2.new(0.042, 0, 0.76883, 0);
+G2L["a"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
+G2L["a"]["Text"] = [[]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.TextBoxes.CursorSize
+G2L["b"] = Instance.new("TextBox", G2L["7"]);
+G2L["b"]["Name"] = [[CursorSize]];
+G2L["b"]["BorderSizePixel"] = 0;
+G2L["b"]["TextWrapped"] = true;
+G2L["b"]["TextSize"] = 14;
+G2L["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["b"]["TextScaled"] = true;
+G2L["b"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+G2L["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/Sarpanch.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["b"]["PlaceholderText"] = [[Cursor Size]];
+G2L["b"]["Size"] = UDim2.new(0, 224, 0, 21);
+G2L["b"]["Position"] = UDim2.new(0.046, 0, 0.56883, 0);
+G2L["b"]["BorderColor3"] = Color3.fromRGB(21, 21, 21);
+G2L["b"]["Text"] = [[70]];
+
+
+-- StarterGui.CWRealPrivv.MainFrame.UICorner
+G2L["c"] = Instance.new("UICorner", G2L["2"]);
+
+
+
+
+return G2L["1"], require;
+
+task.wait()
+
+
+-- UI Core
 
 local Players          = game:GetService("Players")
 local RunService       = game:GetService("RunService")
