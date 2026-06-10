@@ -1,5 +1,3 @@
--- Interface
-
 local G2L = {};
 
 -- StarterGui.CWRealPrivv
@@ -139,14 +137,9 @@ G2L["b"]["Text"] = [[70]];
 G2L["c"] = Instance.new("UICorner", G2L["2"]);
 
 
-
-
-return G2L["1"], require;
-
-task.wait(1)
-
-
--- UI Core
+-- ============================================================
+-- UICore — inline, runs immediately after UI is built
+-- ============================================================
 
 local Players          = game:GetService("Players")
 local RunService       = game:GetService("RunService")
@@ -155,14 +148,14 @@ local GuiService       = game:GetService("GuiService")
 local LocalPlayer      = Players.LocalPlayer
 local Mouse            = LocalPlayer:GetMouse()
 
-local PlayerGui        = LocalPlayer:WaitForChild("PlayerGui")
-local CWGui            = PlayerGui:WaitForChild("CWRealPrivv")
-local MainFrame        = CWGui:WaitForChild("MainFrame")
-local TextBoxes        = MainFrame:WaitForChild("TextBoxes")
-local TitleLabel       = MainFrame:WaitForChild("Elements"):WaitForChild("Title")
+-- Direct references from the G2L table — no WaitForChild needed,
+-- instances are already constructed above.
+local MainFrame  = G2L["2"]
+local TextBoxes  = G2L["7"]
+local TitleLabel = G2L["6"]
 
 -- ─────────────────────────────────────────────────────────────
--- 1. DRAG  (extracted from GuiResize.makeDraggable)
+-- 1. DRAG
 -- ─────────────────────────────────────────────────────────────
 do
 	local dragging
@@ -342,7 +335,7 @@ end
 -- 4. GUN SOUND ID CONTROLLER
 -- ─────────────────────────────────────────────────────────────
 do
-	local textBox     = TextBoxes.GunSoundID
+	local textBox     = G2L["8"]
 	local TARGET_NAME = "ShootSound"
 	local overrideData = {}
 
@@ -466,7 +459,7 @@ end
 -- 5. GUN VOLUME CONTROLLER
 -- ─────────────────────────────────────────────────────────────
 do
-	local textBox      = TextBoxes.GunVolume
+	local textBox      = G2L["a"]
 	local TARGET_NAMES = { ShootSound = true, SecondarySound = true }
 	local overrideData = {}
 
@@ -577,8 +570,8 @@ end
 -- 6. CURSOR CONTROLLER
 -- ─────────────────────────────────────────────────────────────
 do
-	local textBox      = TextBoxes.CursorID
-	local CursorSizeBox = TextBoxes:FindFirstChild("CursorSize")
+	local textBox       = G2L["9"]
+	local CursorSizeBox = G2L["b"]
 
 	local COLOR_WHITE = Color3.fromRGB(255, 255, 255)
 	local COLOR_GREEN = Color3.fromRGB(0,   255, 0  )
@@ -760,3 +753,6 @@ do
 	-- Expose for ConfigManager Tier 3 fallback
 	_G.cwprivv_applyCursorId = applyTrack
 end
+
+
+return G2L["1"], require;
