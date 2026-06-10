@@ -143,7 +143,7 @@ G2L["c"] = Instance.new("UICorner", G2L["2"]);
 
 return G2L["1"], require;
 
-task.wait()
+task.wait(1)
 
 
 -- UI Core
