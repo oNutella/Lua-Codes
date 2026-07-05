@@ -1,0 +1,570 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- CWRealPrivv · Features Controller
+-- Run alongside the gui2lua GUI script (CycleWareRealPrivvOnlyui).
+-- Waits for the ScreenGui to appear in PlayerGui, then wires every feature.
+-- No script.Parent. All paths via game.Players.LocalPlayer.PlayerGui...
+-- Overlays (cursor, hitmarker) are parented to gethui().
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local Players          = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local GuiService       = game:GetService("GuiService")
+local RunService       = game:GetService("RunService")
+local SoundService     = game:GetService("SoundService")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui   = LocalPlayer:WaitForChild("PlayerGui")
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 1  WAIT FOR GUI
+-- gui2lua (CycleWareRealPrivvOnlyui) creates a ScreenGui named "CWRealPrivv".
+-- We wait here until it appears in PlayerGui (up to 30 s).
+-- ──────────────────────────────────────────────────────────────────────────
+local GUI = PlayerGui:WaitForChild("CWRealPrivv", 30)
+assert(GUI, "[CWPrivv] GUI did not appear in PlayerGui within 30 s — is CycleWareRealPrivvOnlyui running?")
+
+local MainFrame  = GUI:WaitForChild("MainFrame")
+local TextBoxes  = MainFrame:WaitForChild("TextBoxes")
+local Elements   = MainFrame:WaitForChild("Elements")
+local TitleLabel = Elements:WaitForChild("Title")
+
+-- TextBox refs (full paths, no script.Parent)
+local CursorIDBox    = TextBoxes:WaitForChild("CursorID")
+local CursorSzBox    = TextBoxes:WaitForChild("CursorSize")
+local HitSoundBox    = TextBoxes:WaitForChild("HitSoundID")
+local HitmarkerIDBox = TextBoxes:WaitForChild("HitmarkerID")
+local HitmarkerSzBox = TextBoxes:WaitForChild("HitmarkerSize")
+local GunSoundIDBox  = TextBoxes:WaitForChild("GunSoundID")
+local GunVolumeBox   = TextBoxes:WaitForChild("GunVolume")
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 2  SHARED HELPERS
+-- ──────────────────────────────────────────────────────────────────────────
+local function toAssetId(raw)
+	raw = raw:match("^%s*(.-)%s*$")
+	if raw:match("^%d+$")              then return "rbxassetid://" .. raw end
+	if raw:match("^rbxassetid://%d+$") then return raw end
+	return nil
+end
+
+local function parseSize(raw)
+	raw = raw:match("^%s*(.-)%s*$")
+	local n = tonumber(raw)
+	return (n and n >= 1) and math.floor(n) or nil
+end
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 3  SHARED CACHES  (mouse pos · team color · GuiInset)
+-- One set of connections serves both cursor and hitmarker.
+-- ──────────────────────────────────────────────────────────────────────────
+local _insetX, _insetY = GuiService:GetGuiInset().X, GuiService:GetGuiInset().Y
+GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
+	local i = GuiService:GetGuiInset(); _insetX = i.X; _insetY = i.Y
+end)
+
+local _mx, _my = 0, 0
+UserInputService.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		_mx = input.Position.X + _insetX
+		_my = input.Position.Y + _insetY
+	end
+end)
+
+local _myTeamColor = LocalPlayer.TeamColor
+LocalPlayer:GetPropertyChangedSignal("TeamColor"):Connect(function()
+	_myTeamColor = LocalPlayer.TeamColor
+end)
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 4  UI TOGGLE  (Insert key shows / hides MainFrame)
+-- ──────────────────────────────────────────────────────────────────────────
+local _guiVisible = true
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.Insert then
+		_guiVisible   = not _guiVisible
+		MainFrame.Visible = _guiVisible
+	end
+end)
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 5  DRAGGABLE MAINFRAME  (inlined from GuiResize.makeDraggable)
+-- ──────────────────────────────────────────────────────────────────────────
+do
+	local dragging, dragInput, dragStart, startPos
+
+	MainFrame.InputBegan:Connect(function(input)
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+		dragging  = true
+		dragStart = input.Position
+		startPos  = MainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end)
+
+	MainFrame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local d = input.Position - dragStart
+			MainFrame.Position = UDim2.new(
+				startPos.X.Scale, startPos.X.Offset + d.X,
+				startPos.Y.Scale, startPos.Y.Offset + d.Y
+			)
+		end
+	end)
+end
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 6  TITLE SHINE EFFECT  (inlined from ShineEffect LocalScript)
+-- ──────────────────────────────────────────────────────────────────────────
+do
+	local gradient = Instance.new("UIGradient")
+	gradient.Rotation = 50
+	gradient.Parent   = TitleLabel
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.ImageColor3 = Color3.new(1, 1, 1)
+
+	local GREY  = Color3.fromRGB(160, 160, 160)
+	local WHITE = Color3.fromRGB(255, 255, 255)
+
+	local function lerp(a, b, t)
+		return Color3.new(a.R+(b.R-a.R)*t, a.G+(b.G-a.G)*t, a.B+(b.B-a.B)*t)
+	end
+	local function smooth(t) return t*t*(3-2*t) end
+	local function makeSeq(base, shine)
+		local m1f=lerp(base,shine,.15); local m1n=lerp(base,shine,.60)
+		local m2f=lerp(base,shine,.08); local m2n=lerp(base,shine,.40)
+		local p2 =lerp(base,shine,.70)
+		return ColorSequence.new({
+			ColorSequenceKeypoint.new(0.00,base),  ColorSequenceKeypoint.new(0.15,base),
+			ColorSequenceKeypoint.new(0.22,m1f),   ColorSequenceKeypoint.new(0.35,m1n),
+			ColorSequenceKeypoint.new(0.50,shine), ColorSequenceKeypoint.new(0.62,m1n),
+			ColorSequenceKeypoint.new(0.72,m1f),   ColorSequenceKeypoint.new(0.78,base),
+			ColorSequenceKeypoint.new(0.80,base),  ColorSequenceKeypoint.new(0.83,m2f),
+			ColorSequenceKeypoint.new(0.88,m2n),   ColorSequenceKeypoint.new(0.93,p2),
+			ColorSequenceKeypoint.new(0.97,m2f),   ColorSequenceKeypoint.new(1.00,base),
+		})
+	end
+
+	local S0=1.8; local S1=-1.8; local ST=3.5; local PT=2.0; local SS=3.5
+	local sweepT=0; local colorT=0; local colorDir=1
+	local inPause=false; local pauseTimer=0
+	local shinePhase="idle"; local shineT=-1
+
+	RunService.Heartbeat:Connect(function(dt)
+		if inPause then
+			pauseTimer += dt
+			if shinePhase=="idle" then shinePhase="shine2"; shineT=0 end
+			if shinePhase=="shine2" or shinePhase=="shine3" then
+				shineT += dt/SS
+				if shineT >= 1 then
+					shinePhase = shinePhase=="shine2" and "shine3" or "done"
+					shineT = shinePhase~="done" and 0 or -1
+				end
+			end
+			gradient.Offset = (shinePhase=="shine2" or shinePhase=="shine3")
+				and Vector2.new(S0+(S1-S0)*shineT, 0)
+				or  Vector2.new(S0, 0)
+			if pauseTimer >= PT and shinePhase=="done" then
+				inPause=false; pauseTimer=0; sweepT=0; shinePhase="idle"; shineT=-1
+			end
+			return
+		end
+		sweepT = sweepT + dt/ST
+		colorT = math.clamp(colorT + colorDir*dt/ST, 0, 1)
+		if sweepT >= 1 then sweepT=1; inPause=true; colorDir=-colorDir end
+		gradient.Offset = Vector2.new(S0+(S1-S0)*sweepT, 0)
+		gradient.Color  = makeSeq(lerp(GREY,WHITE,smooth(colorT)), lerp(WHITE,GREY,smooth(colorT)))
+	end)
+end
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 7  CURSOR  (gethui overlay · team-color tinting)
+-- ──────────────────────────────────────────────────────────────────────────
+local _cursorId     = nil
+local _cursorSize   = 70
+local _sniperActive = UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
+
+local CursorGui = Instance.new("ScreenGui")
+CursorGui.Name           = "CWPrivv_Cursor"
+CursorGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+CursorGui.ResetOnSpawn   = false
+CursorGui.IgnoreGuiInset = true
+CursorGui.DisplayOrder   = 9999
+CursorGui.Parent         = gethui()
+
+local Cursor = Instance.new("ImageLabel")
+Cursor.Name                   = "Cursor"
+Cursor.AnchorPoint            = Vector2.new(0.5, 0.5)
+Cursor.BackgroundTransparency = 1
+Cursor.Size                   = UDim2.new(0, 70, 0, 70)
+Cursor.Image                  = ""
+Cursor.ScaleType              = Enum.ScaleType.Fit
+Cursor.Visible                = false
+Cursor.Parent                 = CursorGui
+
+local COLOR_WHITE = Color3.fromRGB(255,255,255)
+local COLOR_GREEN = Color3.fromRGB(0,255,0)
+local COLOR_RED   = Color3.fromRGB(255,0,0)
+local _lastTarget    = nil
+local _lastTintColor = COLOR_WHITE
+local Mouse = LocalPlayer:GetMouse()
+
+local function cursorEnabled() return _cursorId ~= nil end
+
+local function applyTrack()
+	if not cursorEnabled() then
+		UserInputService.MouseIconEnabled = true
+		Cursor.Visible = false
+		return
+	end
+	UserInputService.MouseIconEnabled = false
+	Cursor.Image   = _cursorId
+	Cursor.Visible = true
+	if _sniperActive then Cursor.Position = UDim2.new(0.5,0,0.5,0) end
+end
+
+UserInputService:GetPropertyChangedSignal("MouseBehavior"):Connect(function()
+	_sniperActive = UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter
+	applyTrack()
+end)
+
+local _lastValidCursorId   = ""
+local _lastValidCursorSize = "70"
+
+CursorIDBox.FocusLost:Connect(function()
+	local t = CursorIDBox.Text:match("^%s*(.-)%s*$")
+	if t == "" then
+		CursorIDBox.Text = _lastValidCursorId
+		_cursorId = _lastValidCursorId ~= "" and toAssetId(_lastValidCursorId) or nil
+	else
+		local p = toAssetId(t)
+		if p then
+			_lastValidCursorId = p:match("%d+") or ""
+			_cursorId          = p
+			CursorIDBox.Text   = _lastValidCursorId
+		else
+			CursorIDBox.Text = _lastValidCursorId
+			_cursorId = _lastValidCursorId ~= "" and toAssetId(_lastValidCursorId) or nil
+		end
+	end
+	Cursor.Image = _cursorId or ""
+	applyTrack()
+end)
+
+CursorSzBox.FocusLost:Connect(function()
+	local s = parseSize(CursorSzBox.Text)
+	if s then
+		_cursorSize            = s
+		_lastValidCursorSize   = tostring(s)
+		Cursor.Size            = UDim2.new(0, s, 0, s)
+	else
+		CursorSzBox.Text = _lastValidCursorSize
+	end
+end)
+
+-- PreRender: position + team-color tint
+RunService.PreRender:Connect(function()
+	if not cursorEnabled() then return end
+	if not _sniperActive then
+		Cursor.Position = UDim2.fromOffset(_mx, _my)
+	end
+	local Target = Mouse.Target
+	if Target ~= _lastTarget then
+		_lastTarget = Target
+		local tint  = COLOR_WHITE
+		if Target and Target.Parent then
+			local Limb = Target.Parent:FindFirstChildOfClass("Humanoid")
+			local Acc  = Target.Parent.Parent and Target.Parent.Parent:FindFirstChildOfClass("Humanoid")
+			local p    = Limb and Players:GetPlayerFromCharacter(Target.Parent)
+				or (Acc and Players:GetPlayerFromCharacter(Target.Parent.Parent))
+			if p then tint = p.TeamColor == _myTeamColor and COLOR_GREEN or COLOR_RED end
+		end
+		if tint ~= _lastTintColor then _lastTintColor = tint; Cursor.ImageColor3 = tint end
+	end
+end)
+
+-- Init cursor from whatever is currently in the textboxes
+do
+	local p = toAssetId(CursorIDBox.Text)
+	if p then
+		_cursorId = p; _lastValidCursorId = p:match("%d+") or ""
+		CursorIDBox.Text = _lastValidCursorId; Cursor.Image = p
+	end
+	local s = parseSize(CursorSzBox.Text)
+	if s then
+		_cursorSize = s; _lastValidCursorSize = tostring(s)
+		Cursor.Size = UDim2.new(0, s, 0, s)
+	else
+		CursorSzBox.Text = _lastValidCursorSize
+	end
+	applyTrack()
+end
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 8  HITMARKER  (gethui overlay · RayPart geometry detection)
+-- ──────────────────────────────────────────────────────────────────────────
+local HM_DEFAULT_SOUND  = "rbxassetid://1347140027"
+local HM_DEFAULT_IMAGE  = "rbxassetid://890801299"
+local HM_DEFAULT_SIZE   = 45
+
+local _hmSound  = HM_DEFAULT_SOUND
+local _hmImage  = HM_DEFAULT_IMAGE
+local _hmSize   = HM_DEFAULT_SIZE
+
+local HitmarkerGui = Instance.new("ScreenGui")
+HitmarkerGui.Name           = "CWPrivv_Hitmarker"
+HitmarkerGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+HitmarkerGui.ResetOnSpawn   = false
+HitmarkerGui.IgnoreGuiInset = true
+HitmarkerGui.DisplayOrder   = 9998
+HitmarkerGui.Parent         = gethui()
+
+local HMTemplate = Instance.new("ImageLabel")
+HMTemplate.Name                   = "HM"
+HMTemplate.AnchorPoint            = Vector2.new(0.5, 0.5)
+HMTemplate.BackgroundTransparency = 1
+HMTemplate.Size                   = UDim2.new(0, HM_DEFAULT_SIZE, 0, HM_DEFAULT_SIZE)
+HMTemplate.Image                  = HM_DEFAULT_IMAGE
+
+local function playHitSound()
+	local snd = Instance.new("Sound")
+	snd.SoundId = _hmSound; snd.Volume = 1
+	SoundService:PlayLocalSound(snd)
+	game:GetService("Debris"):AddItem(snd, 10)
+end
+
+local function showHitmarker()
+	playHitSound()
+	local c    = HMTemplate:Clone()
+	c.Image    = _hmImage
+	c.Size     = UDim2.new(0, _hmSize, 0, _hmSize)
+	c.Position = UDim2.fromOffset(_mx, _my)
+	c.Rotation = math.random(0, 90)
+	c.Parent   = HitmarkerGui
+	game:GetService("Debris"):AddItem(c, 0.05)
+end
+
+HitSoundBox.FocusLost:Connect(function()
+	local id = toAssetId(HitSoundBox.Text)
+	if id then _hmSound = id; HitSoundBox.Text = id:match("%d+") or ""
+	else HitSoundBox.Text = _hmSound:match("%d+") or "" end
+end)
+
+HitmarkerIDBox.FocusLost:Connect(function()
+	local id = toAssetId(HitmarkerIDBox.Text)
+	if id then
+		_hmImage = id; HMTemplate.Image = id
+		HitmarkerIDBox.Text = id:match("%d+") or ""
+	else HitmarkerIDBox.Text = _hmImage:match("%d+") or "" end
+end)
+
+HitmarkerSzBox.FocusLost:Connect(function()
+	local s = parseSize(HitmarkerSzBox.Text)
+	if s then
+		_hmSize = s; HMTemplate.Size = UDim2.new(0,s,0,s)
+		HitmarkerSzBox.Text = tostring(s)
+	else HitmarkerSzBox.Text = tostring(_hmSize) end
+end)
+
+-- RayPart geometry hit detection
+local ENDPOINT_RADIUS = 3.5
+
+local function getEndpoint(rp)
+	return rp.Position + rp.CFrame.LookVector * (rp.Size.Z / 2)
+end
+
+local function hitEnemy(ep)
+	for _, pl in ipairs(Players:GetPlayers()) do
+		if pl == LocalPlayer then continue end
+		if pl.TeamColor == _myTeamColor then continue end
+		local ch = pl.Character
+		if not ch then continue end
+		if ch:FindFirstChildOfClass("ForceField") then continue end
+		local hum = ch:FindFirstChild("Humanoid")
+		if not hum or hum.Health <= 0 then continue end
+		local hrp = ch:FindFirstChild("HumanoidRootPart")
+		if not hrp or (hrp.Position - ep).Magnitude > 10 then continue end
+		for _, pt in ipairs(ch:GetChildren()) do
+			if pt:IsA("BasePart") and (pt.Position - ep).Magnitude <= ENDPOINT_RADIUS then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+local _hitThisShot = false
+workspace.CurrentCamera.ChildAdded:Connect(function(child)
+	if child.Name ~= "RayPart" then return end
+	if _hitThisShot then return end
+	local char = LocalPlayer.Character
+	local tool = char and char:FindFirstChildOfClass("Tool")
+	if not (tool and tool:GetAttribute("Local_IsShooting") == true) then return end
+	local ep = getEndpoint(child)
+	if hitEnemy(ep) then
+		_hitThisShot = true
+		showHitmarker()
+		task.defer(function() _hitThisShot = false end)
+	end
+end)
+
+-- Init hitmarker textboxes
+do
+	local id = toAssetId(HitSoundBox.Text)
+	if id then _hmSound = id; HitSoundBox.Text = id:match("%d+") or ""
+	else HitSoundBox.Text = HM_DEFAULT_SOUND:match("%d+") end
+
+	local hid = toAssetId(HitmarkerIDBox.Text)
+	if hid then
+		_hmImage = hid; HMTemplate.Image = hid
+		HitmarkerIDBox.Text = hid:match("%d+") or ""
+	else HitmarkerIDBox.Text = HM_DEFAULT_IMAGE:match("%d+") end
+
+	local s = parseSize(HitmarkerSzBox.Text)
+	if s then _hmSize=s; HMTemplate.Size=UDim2.new(0,s,0,s)
+	else HitmarkerSzBox.Text = tostring(HM_DEFAULT_SIZE) end
+end
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 9  GUN SOUND ID OVERRIDE
+-- ──────────────────────────────────────────────────────────────────────────
+local GS_NAME = "ShootSound"
+local gsData  = {}
+
+local function gsId()     return toAssetId(GunSoundIDBox.Text) end
+local function gsActive() return gsId() ~= nil end
+
+local function gsRemove(s)
+	local d=gsData[s]; if not d then return end
+	pcall(function() d.conn:Disconnect() end)
+	gsData[s]=nil
+	if s and s.Parent then s.SoundId=d.orig end
+end
+
+local function gsApply(s)
+	local id=gsId(); if not id then gsRemove(s); return end
+	local d=gsData[s]
+	if d then if s.SoundId~=id then s.SoundId=id end; return end
+	local orig=s.SoundId; s.SoundId=id
+	local conn=s:GetPropertyChangedSignal("SoundId"):Connect(function()
+		local a=gsId(); if a and s.SoundId~=a then s.SoundId=a end
+	end)
+	gsData[s]={conn=conn,orig=orig}
+end
+
+local function gsHandle(s)
+	if not s:IsA("Sound") or s.Name~=GS_NAME then return end
+	if gsActive() then gsApply(s) else gsRemove(s) end
+end
+
+local function gsScan()
+	for s in pairs(gsData) do gsHandle(s) end
+	for _,d in ipairs(workspace:GetDescendants()) do gsHandle(d) end
+end
+
+workspace.DescendantAdded:Connect(function(i)
+	if i:IsA("Sound") and i.Name==GS_NAME then task.defer(function() gsHandle(i) end) end
+end)
+workspace.DescendantRemoving:Connect(function(i)
+	if not i:IsA("Sound") then return end
+	local d=gsData[i]; if d then pcall(function() d.conn:Disconnect() end); gsData[i]=nil end
+end)
+LocalPlayer.CharacterAdded:Connect(function() task.wait(); gsScan() end)
+
+local _gsLastId = ""
+GunSoundIDBox.FocusLost:Connect(function()
+	local t=GunSoundIDBox.Text:match("^%s*(.-)%s*$")
+	if t=="" then GunSoundIDBox.Text=_gsLastId
+	else
+		local p=toAssetId(t)
+		if p then _gsLastId=p:match("%d+") or ""; GunSoundIDBox.Text=_gsLastId
+		else GunSoundIDBox.Text=_gsLastId end
+	end
+	gsScan()
+end)
+
+RunService.PreRender:Connect(function()
+	if not gsActive() then return end
+	local id=gsId(); if not id then return end
+	for s,d in pairs(gsData) do
+		if not s or not s.Parent then pcall(function() d.conn:Disconnect() end); gsData[s]=nil; continue end
+		if s.SoundId~=id then s.SoundId=id end
+	end
+end)
+gsScan()
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- § 10  GUN VOLUME OVERRIDE
+-- ──────────────────────────────────────────────────────────────────────────
+local GV_NAMES = {ShootSound=true, SecondarySound=true}
+local gvData   = {}
+
+local function gvVol()    local n=tonumber(GunVolumeBox.Text); return n and math.clamp(n,0,10) or nil end
+local function gvActive() return gvVol()~=nil end
+
+local function gvRemove(s)
+	local d=gvData[s]; if not d then return end
+	pcall(function() d.conn:Disconnect() end)
+	gvData[s]=nil
+	if s and s.Parent then s.Volume=d.orig end
+end
+
+local function gvApply(s)
+	local v=gvVol(); if not v then gvRemove(s); return end
+	local d=gvData[s]
+	if d then if s.Volume~=v then s.Volume=v end; return end
+	local orig=s.Volume; s.Volume=v
+	local conn=s:GetPropertyChangedSignal("Volume"):Connect(function()
+		local a=gvVol(); if a and s.Volume~=a then s.Volume=a end
+	end)
+	gvData[s]={conn=conn,orig=orig}
+end
+
+local function gvHandle(s)
+	if not s:IsA("Sound") or not GV_NAMES[s.Name] then return end
+	if gvActive() then gvApply(s) else gvRemove(s) end
+end
+
+local function gvScan()
+	for s in pairs(gvData) do gvHandle(s) end
+	for _,d in ipairs(workspace:GetDescendants()) do gvHandle(d) end
+end
+
+workspace.DescendantAdded:Connect(function(i)
+	if i:IsA("Sound") and GV_NAMES[i.Name] then task.defer(function() gvHandle(i) end) end
+end)
+workspace.DescendantRemoving:Connect(function(i)
+	if not i:IsA("Sound") then return end
+	local d=gvData[i]; if d then pcall(function() d.conn:Disconnect() end); gvData[i]=nil end
+end)
+LocalPlayer.CharacterAdded:Connect(function() task.wait(); gvScan() end)
+
+local _gvLastVol = nil
+GunVolumeBox.FocusLost:Connect(function()
+	local t=GunVolumeBox.Text:match("^%s*(.-)%s*$")
+	if t=="" then
+		GunVolumeBox.Text = _gvLastVol~=nil and tostring(_gvLastVol) or ""
+	else
+		local n=tonumber(t)
+		if n and n>=0 and n<=10 then _gvLastVol=n; GunVolumeBox.Text=tostring(n)
+		else GunVolumeBox.Text = _gvLastVol~=nil and tostring(_gvLastVol) or "" end
+	end
+	gvScan()
+end)
+
+RunService.PreRender:Connect(function()
+	if not gvActive() then return end
+	local v=gvVol(); if not v then return end
+	for s,d in pairs(gvData) do
+		if not s or not s.Parent then pcall(function() d.conn:Disconnect() end); gvData[s]=nil; continue end
+		if s.Volume~=v then s.Volume=v end
+	end
+end)
+gvScan()
