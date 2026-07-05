@@ -1,0 +1,2 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/oNutella/Lua-Codes/refs/heads/main/CwRealPrivvUI.lua"))() --ui
+loadstring(game:HttpGet("https://raw.githubusercontent.com/oNutella/Lua-Codes/refs/heads/main/CwRealPrivvFunc"))() --features
