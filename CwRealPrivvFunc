@@ -374,16 +374,39 @@ HitmarkerSzBox.FocusLost:Connect(function()
 end)
 
 -- RayPart geometry hit detection
-local ENDPOINT_RADIUS = 3.5
+local ENDPOINT_RADIUS  = 3.5
+local MUZZLE_TOLERANCE = 4    -- studs: RayPart origin must be this close to our gun's Muzzle
+local HIT_COOLDOWN     = 0.05 -- seconds: prevents doubles within one shot event
+
+local function getOrigin(rp)
+	return rp.Position - rp.CFrame.LookVector * (rp.Size.Z / 2)
+end
 
 local function getEndpoint(rp)
 	return rp.Position + rp.CFrame.LookVector * (rp.Size.Z / 2)
 end
 
+-- Two-gate ownership check: Local_IsShooting AND muzzle-origin proximity.
+-- Local_IsShooting alone stays true for the entire burst, letting other
+-- players' replicated RayParts (which also appear in CurrentCamera) slip
+-- through. The muzzle-origin check pins each RayPart to the gun that fired
+-- it — another player's bullet always originates far from our Muzzle part.
+local function isOurBullet(rp)
+	local char = LocalPlayer.Character
+	if not char then return false end
+	local tool = char:FindFirstChildOfClass("Tool")
+	if not tool or tool:GetAttribute("Local_IsShooting") ~= true then return false end
+	local muzzle = tool:FindFirstChild("Muzzle", true)
+	if not muzzle then return false end
+	return (getOrigin(rp) - muzzle.Position).Magnitude <= MUZZLE_TOLERANCE
+end
+
 local function hitEnemy(ep)
 	for _, pl in ipairs(Players:GetPlayers()) do
 		if pl == LocalPlayer then continue end
-		if pl.TeamColor == _myTeamColor then continue end
+		-- Compare Team objects, not TeamColor: TeamColor can mismatch for
+		-- sub-teams or when the game's team logic diverges from TeamColor.
+		if pl.Team == LocalPlayer.Team then continue end
 		local ch = pl.Character
 		if not ch then continue end
 		if ch:FindFirstChildOfClass("ForceField") then continue end
@@ -400,18 +423,20 @@ local function hitEnemy(ep)
 	return false
 end
 
-local _hitThisShot = false
+-- os.clock() cooldown replaces task.defer + _hitThisShot boolean.
+-- task.defer resets the flag at the next Lua resumption point which can
+-- fall between two rapid-fire RayParts in the same burst, letting both
+-- through. A 50 ms time gate survives across frames reliably.
+local _lastHitTime = 0
 workspace.CurrentCamera.ChildAdded:Connect(function(child)
 	if child.Name ~= "RayPart" then return end
-	if _hitThisShot then return end
-	local char = LocalPlayer.Character
-	local tool = char and char:FindFirstChildOfClass("Tool")
-	if not (tool and tool:GetAttribute("Local_IsShooting") == true) then return end
+	if not isOurBullet(child) then return end
+	local now = os.clock()
+	if now - _lastHitTime < HIT_COOLDOWN then return end
 	local ep = getEndpoint(child)
 	if hitEnemy(ep) then
-		_hitThisShot = true
+		_lastHitTime = now
 		showHitmarker()
-		task.defer(function() _hitThisShot = false end)
 	end
 end)
 
